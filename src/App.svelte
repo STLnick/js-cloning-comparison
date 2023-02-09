@@ -1,17 +1,38 @@
 <script lang="ts">
-  import logo from './assets/svelte.png'
   import AppBar from './lib/AppBar.svelte';
-  import Counter from './lib/Counter.svelte'
-  import Footer from './lib/Footer.svelte'
+  import Footer from './lib/Footer.svelte';
+  import Chart from 'chart.js/auto';
+
+  window.requestAnimationFrame(() => {
+    const ctx = document.getElementById('chart-canvas') as HTMLCanvasElement;
+  
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        datasets: [{
+          label: '# of Votes',
+          data: [12, 19, 3, 5, 2, 3],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+
+  });
 </script>
 
 <AppBar/>
 <main class="text-center p-4 mx-0">
-  <img width="100" height="100" src={logo} alt="Svelte Logo" class="inline-block" />
-  <h1 class="text-6xl uppercase font-thin leading-tight my-8 mx-auto max-w-xs sm:max-w-xs">Hello Vite!</h1>
-
-  <Counter id="0" />
-
+  <div class="w-[800px] mx-auto">
+    <canvas id="chart-canvas"></canvas>
+  </div>
 </main>
 <Footer />
 
@@ -19,9 +40,5 @@
   :root {
     --svelte-rgb: 255, 62, 0;
     --svelte-hex: #FF3E00;
-  }
-
-  h1 {
-    color: rgb(var(--svelte-rgb));
   }
 </style>
