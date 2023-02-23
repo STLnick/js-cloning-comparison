@@ -1,36 +1,39 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import AppBar from './lib/AppBar.svelte';
   import Footer from './lib/Footer.svelte';
+  import LoadingSpinner from './lib/LoadingSpinner.svelte';
   import Chart from 'chart.js/auto';
   import { createTester } from './lib/index';
 
-  let message = '(test not ran yet)';
+  let chart;
+  let loading = true;
   const tester = createTester();
-  let runs = [];
+  let results = tester.run(10000, 25);
+  const resultKeys = Object.keys(results);
 
   function handleClick() {
-    const run = tester.run(10000);
-    /**
-     * Was trying to format the runs that get returned
-     * in a way that was easier for me to loop for display.
-     * 
-     * Currenly storing with runId in an object but could
-     * prolly just store as an array and loop on the
-     * tester instead of having a second variable...
-    */
-    runs.push(run);
+    if (loading) return;
+
+    loading = true;
+    setTimeout(() => {
+      results = tester.run(10000, 25);
+      chart.data.datasets[0].data = resultKeys.map(key => results[key].average);
+      chart.update();
+      loading = false;
+    }, 50);
   }
 
   window.requestAnimationFrame(() => {
     const ctx = document.getElementById('chart-canvas') as HTMLCanvasElement;
   
-    new Chart(ctx, {
+    chart = new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        labels: resultKeys,
         datasets: [{
-          label: '# of Votes',
-          data: [12, 19, 3, 5, 2, 3],
+          label: 'Average Time Elapsed',
+          data: resultKeys.map(key => results[key].average),
           borderWidth: 1
         }]
       },
@@ -42,24 +45,24 @@
         }
       }
     });
-
   });
+
+  onMount(() => loading = false);
 </script>
 
 <AppBar/>
-<main class="text-center p-4 mx-0">
+<main class="text-center p-4 pb-12 mx-0">
   <div class="min-h-24 flex flex-col items-center justify-center">
     <button
-      class="bg-svelte-500 hover:bg-svelte-400 text-white font-bold py-2 px-4 border-b-4 border-svelte-700 hover:border-svelte-500 rounded"
+      class="w-48 bg-svelte-500 hover:bg-svelte-400 text-white font-bold py-2 px-4 border-b-4 border-svelte-700 hover:border-svelte-500 rounded"
       on:click={handleClick}
     >
+      {#if loading}
+      <LoadingSpinner />
+      {:else}
       Run Test
+      {/if}
     </button>
-    <div class="bg-slate-300 my-4">
-      {#each runs as run}
-        <div class="pa-4">{run}</div>
-      {/each}  
-    </div>
   </div>
   <div class="w-[800px] mx-auto">
     <canvas id="chart-canvas"></canvas>
