@@ -46,22 +46,55 @@ export class CloneTester {
   constructor(obj) {
     this.obj = obj;
 
+    this.runId = -1;
+    this.runs = {};
+    this.results = {};
+
     // Cloning methods
     this.jsonSAP = jsonSAP;
     this.structuredClone = structuredClone;
     this.recursivelyCloneObject = recursivelyCloneObject;
   }
 
+  get currentRun() {
+    return this.runs[this.runId];
+  }
+
+  storeResults(testName) {
+    const entries = performance.getEntriesByName(`measure-${testName}`);
+
+    this.results[testName] =
+      entries.length === 0
+        ? "Error in test results!"
+        : entries[this.runId].duration;
+  }
+
+  runSingleTest(testName) {
+    performance.mark(`begin-${testName}`);
+    for (let i = 0; i < this.iterations; i++) {
+      this[testName](this.obj);
+    }
+    performance.mark(`end-${testName}`);
+    performance.measure(
+      `measure-${testName}`,
+      `begin-${testName}`,
+      `end-${testName}`
+    );
+    this.storeResults(testName);
+  }
+
   test() {
+    this.runId++;
     console.log("...Testing...");
-    // Run jsonSAP
-    // Track data
 
-    // Run structuredClone
-    // Track data
+    this.runSingleTest("jsonSAP");
+    this.runSingleTest("structuredClone");
+    this.runSingleTest("recursivelyCloneObject");
 
-    // Run recursivelyCloneObject
-    // Track data
+    this.runs[this.runId] = { ...this.results };
+
+    console.log({ results: this.results });
+    console.log("Testing finished!");
   }
 
   show() {
@@ -69,8 +102,10 @@ export class CloneTester {
     console.log("[SHOW RESULTS]");
   }
 
-  run() {
+  run(iterations) {
+    this.iterations = iterations;
     this.test();
     this.show();
+    return this.results;
   }
 }

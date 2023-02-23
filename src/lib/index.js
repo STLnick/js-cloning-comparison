@@ -1,6 +1,6 @@
 import { CloneTester } from "../utils/cloning";
 
-export function _main() {
+export function createTester() {
   const testObj = {
     name: "Nick Ray",
     occupation: "Software Engineer",
@@ -10,10 +10,20 @@ export function _main() {
       mother: "Karen",
       father: "Steve",
       brother: "Steven",
+      nested: {
+        fiance: "Courtney",
+        mother: "Karen",
+        father: "Steve",
+        brother: "Steven",
+        nested: {
+          fiance: "Courtney",
+          mother: "Karen",
+          father: "Steve",
+          brother: "Steven",
+        },
+      },
     },
   };
 
-  //   const tester = new CloneTester(testObj);
-  //   tester.run();
-  console.log("- - - - - - - Test Ending - - - - - - -");
+  return new CloneTester(testObj);
 }
