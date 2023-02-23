@@ -1,11 +1,15 @@
 import { CloneTester } from "../utils/cloning";
 
-export function createTester() {
-  const testObj = {
-    name: "Nick Ray",
-    occupation: "Software Engineer",
-    hobbies: ["Woodworking", "Reading", "Playing Music", "Listening to Music"],
-    relations: {
+const TEST_OBJ = {
+  name: "Nick Ray",
+  occupation: "Software Engineer",
+  hobbies: ["Woodworking", "Reading", "Playing Music", "Listening to Music"],
+  relations: {
+    fiance: "Courtney",
+    mother: "Karen",
+    father: "Steve",
+    brother: "Steven",
+    nested: {
       fiance: "Courtney",
       mother: "Karen",
       father: "Steve",
@@ -15,15 +19,11 @@ export function createTester() {
         mother: "Karen",
         father: "Steve",
         brother: "Steven",
-        nested: {
-          fiance: "Courtney",
-          mother: "Karen",
-          father: "Steve",
-          brother: "Steven",
-        },
       },
     },
-  };
+  },
+};
 
-  return new CloneTester(testObj);
+export function createTester() {
+  return new CloneTester(TEST_OBJ);
 }
