@@ -1,3 +1,4 @@
+import type { TestResults } from "./interfaces";
 import { calcAverage } from "./misc";
 
 export const jsonSAP = (obj: any) => JSON.parse(JSON.stringify(obj));
@@ -43,17 +44,6 @@ export const recursivelyCloneObject = (obj: Object) => {
 
   return clonedObj;
 };
-
-interface TestResult {
-  runs: number[];
-  readonly average: number;
-}
-
-interface TestResults {
-  jsonSAP: TestResult;
-  structuredClone: TestResult;
-  recursivelyCloneObject: TestResult;
-}
 
 export class CloneTester {
   iterations: number;
