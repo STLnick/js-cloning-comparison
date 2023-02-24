@@ -45,14 +45,14 @@ export const recursivelyCloneObject = (obj: Object) => {
 };
 
 interface TestResult {
-  runs: number[],
-  readonly average: number,
+  runs: number[];
+  readonly average: number;
 }
 
 interface TestResults {
-  jsonSAP: TestResult,
-  structuredClone: TestResult,
-  recursivelyCloneObject: TestResult,
+  jsonSAP: TestResult;
+  structuredClone: TestResult;
+  recursivelyCloneObject: TestResult;
 }
 
 export class CloneTester {
@@ -73,19 +73,19 @@ export class CloneTester {
         runs: [],
         get average() {
           return calcAverage(this.runs);
-        }
+        },
       },
       structuredClone: {
         runs: [],
         get average() {
           return calcAverage(this.runs);
-        }
+        },
       },
       recursivelyCloneObject: {
         runs: [],
         get average() {
           return calcAverage(this.runs);
-        }
+        },
       },
     };
 
@@ -95,11 +95,15 @@ export class CloneTester {
     this.recursivelyCloneObject = recursivelyCloneObject;
   }
 
+  setIterations(val) {
+    this.iterations = val;
+  }
+
   storeResults(testName: string) {
     const entries = performance.getEntriesByName(`measure-${testName}`);
 
     if (entries.length === 0) {
-      this.results[testName].error = "Error in test results!";  
+      this.results[testName].error = "Error in test results!";
     } else {
       this.results[testName].runs.push(entries[this.runId].duration);
     }
@@ -127,16 +131,11 @@ export class CloneTester {
   }
 
   /**
-   * 
-   * @param {number} iterations the number of times within a run the cloning function will run
-   * @param {number} runs the total number of times to run each method
+   *
    * @returns Results object containing data for each method's runs
    */
-  run(iterations: number, runs: number) {
-    this.iterations = iterations;
-    for (let i = 0; i < runs; i++) {
-      this.test();
-    }
+  run() {
+    this.test();
     return this.results;
   }
 }

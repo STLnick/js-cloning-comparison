@@ -9,7 +9,9 @@
   let chart;
   let loading = true;
   const tester = createTester();
-  let results = tester.run(10000, 25);
+  let iterations = 10000;
+  $: tester.setIterations(iterations);
+  let results = tester.run();
   const resultKeys = Object.keys(results);
 
   function handleClick() {
@@ -24,6 +26,12 @@
     }, 50);
   }
 
+  function handleIterationsInput(val) {
+    console.log({ val });//!LOG
+
+    tester.setIterations(val);
+  }
+
   window.requestAnimationFrame(() => {
     const ctx = document.getElementById('chart-canvas') as HTMLCanvasElement;
   
@@ -35,15 +43,20 @@
           label: 'Average Time Elapsed',
           data: resultKeys.map(key => results[key].average),
           borderWidth: 1
-        }]
+        }],
       },
       options: {
         scales: {
           y: {
-            beginAtZero: true
-          }
-        }
-      }
+            beginAtZero: true,
+            ticks: {
+              callback: function(value, index, ticks) {
+                return value + 'ms';
+              },
+            },
+          },
+        },
+      },
     });
   });
 
@@ -53,6 +66,18 @@
 <AppBar/>
 <main class="text-center p-4 pb-12 mx-0">
   <div class="min-h-24 flex flex-col items-center justify-center">
+    <label for="iterations" class="py-8">
+      <div>
+        Iterations:
+      </div>
+      <input
+        type="number"
+        name="iterations"
+        id="iterations"
+        class="border-2 border-gray-200"
+        bind:value={iterations}
+      />
+    </label>
     <button
       class="w-48 bg-svelte-500 hover:bg-svelte-400 text-white font-bold py-2 px-4 border-b-4 border-svelte-700 hover:border-svelte-500 rounded"
       on:click={handleClick}
@@ -64,7 +89,7 @@
       {/if}
     </button>
   </div>
-  <div class="w-[800px] mx-auto">
+  <div class="w-[800px] mx-auto mt-12">
     <canvas id="chart-canvas"></canvas>
   </div>
 </main>
