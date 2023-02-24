@@ -3,6 +3,7 @@
   import AppBar from './lib/AppBar.svelte';
   import Footer from './lib/Footer.svelte';
   import LoadingSpinner from './lib/LoadingSpinner.svelte';
+  import ResultsDisplay from './lib/ResultsDisplay.svelte';
   import Chart from 'chart.js/auto';
   import { createTester } from './lib/index';
 
@@ -19,17 +20,11 @@
 
     loading = true;
     setTimeout(() => {
-      results = tester.run(10000, 25);
+      results = tester.run();
       chart.data.datasets[0].data = resultKeys.map(key => results[key].average);
       chart.update();
       loading = false;
     }, 50);
-  }
-
-  function handleIterationsInput(val) {
-    console.log({ val });//!LOG
-
-    tester.setIterations(val);
   }
 
   window.requestAnimationFrame(() => {
@@ -42,7 +37,7 @@
         datasets: [{
           label: 'Average Time Elapsed',
           data: resultKeys.map(key => results[key].average),
-          borderWidth: 1
+          borderWidth: 2
         }],
       },
       options: {
@@ -74,7 +69,7 @@
         type="number"
         name="iterations"
         id="iterations"
-        class="border-2 border-gray-200"
+        class="border-2 border-gray-200 text-center"
         bind:value={iterations}
       />
     </label>
@@ -92,6 +87,7 @@
   <div class="w-[800px] mx-auto mt-12">
     <canvas id="chart-canvas"></canvas>
   </div>
+  <ResultsDisplay results={results}/>
 </main>
 <Footer />
 
