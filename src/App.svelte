@@ -9,14 +9,17 @@
 
   let chart;
   let loading = true;
-  const tester = createTester();
   let iterations = 10000;
+  let iterationLog = [];
+  const tester = createTester();
   $: tester.setIterations(iterations);
   let results = tester.run();
+  iterationLog = [ ...iterationLog, iterations ];
   const resultKeys = Object.keys(results);
 
   function handleClick() {
     if (loading) return;
+    iterationLog = [ ...iterationLog, iterations ];
 
     loading = true;
     setTimeout(() => {
@@ -87,7 +90,7 @@
   <div class="w-[800px] mx-auto mt-12">
     <canvas id="chart-canvas"></canvas>
   </div>
-  <ResultsDisplay results={results}/>
+  <ResultsDisplay results={results} iterations={iterationLog}/>
 </main>
 <Footer />
 
