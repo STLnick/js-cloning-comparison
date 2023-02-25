@@ -5,6 +5,24 @@
   export let iterations: any;
 
   $: arrayResults = Object.keys(results).map(key => ({ ...results[key], key}));
+
+  function shouldAddComma(index, length) {
+    return index + 1 !== length && (index + 1) % 3 === 0;
+  }
+
+  function formatCount(count: number): string {
+    let countString = String(count).split('').reverse();
+    let formatted = [];
+
+    countString.forEach((num, i) => {
+      formatted.push(num);
+      if (shouldAddComma(i, countString.length)) {
+        formatted.push(',');
+      }
+    });
+
+    return formatted.reverse().join('');
+  }
 </script>
 
 <div class="w-[800px] flex mx-auto mt-10 p-4 bg-gray-200">
@@ -12,7 +30,7 @@
       <h3 class="text-lg">Iterations</h3>
       {#each iterations as iterationCount}
         <div>
-            {iterationCount}
+            {formatCount(iterationCount)}
         </div>
       {/each}
     </div>
@@ -21,7 +39,7 @@
         <h3 class="text-lg font-bold">{result.key}</h3>
         {#each result.runs as run}
           <div>
-              {run.toFixed(2)}
+              {`${run.toFixed(2)}ms`}
           </div>
         {/each}
       </div>
