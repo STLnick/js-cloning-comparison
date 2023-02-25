@@ -6,22 +6,27 @@
 
   $: arrayResults = Object.keys(results).map(key => ({ ...results[key], key}));
 
-  function shouldAddComma(index, length) {
+  function shouldAddComma(index: number, length: number): boolean {
     return index + 1 !== length && (index + 1) % 3 === 0;
   }
 
-  function formatCount(count: number): string {
-    let countString = String(count).split('').reverse();
-    let formatted = [];
+  function formatNumber(num: number): string {
+    const numStringArr = String(num).split('').reverse();
+    const dotIndex = numStringArr.findIndex(c => c === '.');
+    const decimal = dotIndex !== -1 ? `.${numStringArr.slice(0, dotIndex).reverse().join('')}` : '';
+    const valueToFormat = dotIndex !== -1 ? numStringArr.slice(dotIndex + 1) : [ ...numStringArr ];
+    const formatted = [];
+    
+    console.log({ dotIndex, decimal: [ ...decimal ], valueToFormat: [ ...valueToFormat ] });
 
-    countString.forEach((num, i) => {
+    valueToFormat.forEach((num, i) => {
       formatted.push(num);
-      if (shouldAddComma(i, countString.length)) {
+      if (shouldAddComma(i, valueToFormat.length)) {
         formatted.push(',');
       }
     });
 
-    return formatted.reverse().join('');
+    return `${formatted.reverse().join('')}${decimal}`;
   }
 </script>
 
@@ -30,7 +35,7 @@
       <h3 class="text-lg">Iterations</h3>
       {#each iterations as iterationCount}
         <div>
-            {formatCount(iterationCount)}
+            {formatNumber(iterationCount)}
         </div>
       {/each}
     </div>
@@ -39,7 +44,7 @@
         <h3 class="text-lg font-bold">{result.key}</h3>
         {#each result.runs as run}
           <div>
-              {`${run.toFixed(2)}ms`}
+              {`${formatNumber(run.toFixed(2))}ms`}
           </div>
         {/each}
       </div>
