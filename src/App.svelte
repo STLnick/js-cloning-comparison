@@ -12,6 +12,7 @@
   let iterations = 10000;
   let iterationLog = [];
   const tester = createTester();
+  tester.setIterations(iterations);
   $: tester.setIterations(iterations);
   let results = tester.run();
   iterationLog = [ ...iterationLog, iterations ];
