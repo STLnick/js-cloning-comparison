@@ -11,24 +11,27 @@
   let loading = true;
   let iterations = 10000;
   let iterationLog = [];
+
   const tester = createTester();
   tester.setIterations(iterations);
   $: tester.setIterations(iterations);
-  let results = tester.run();
-  iterationLog = [ ...iterationLog, iterations ];
+
+  let results = {
+    jsonSAP: null,
+    structuredClone: null,
+    recursivelyCloneObject: null,
+  };
   const resultKeys = Object.keys(results);
 
   function handleClick() {
     if (loading) return;
-    iterationLog = [ ...iterationLog, iterations ];
-
     loading = true;
-    setTimeout(() => {
-      results = tester.run();
-      chart.data.datasets[0].data = resultKeys.map(key => results[key].average);
-      chart.update();
-      loading = false;
-    }, 50);
+
+    iterationLog = [ ...iterationLog, iterations ];
+    results = tester.run();
+    chart.data.datasets[0].data = resultKeys.map(key => results[key].average);
+    chart.update();
+    loading = false;
   }
 
   window.requestAnimationFrame(() => {
@@ -40,7 +43,7 @@
         labels: resultKeys,
         datasets: [{
           label: 'Average Time Elapsed',
-          data: resultKeys.map(key => results[key].average),
+          data: resultKeys.map(key => results[key]?.average),
           borderWidth: 2
         }],
       },

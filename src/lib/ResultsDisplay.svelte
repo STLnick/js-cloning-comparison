@@ -25,6 +25,8 @@
     return indices;
   }, []);
   $: fastestTime = arrayResults.reduce((time, result) => {
+    if (!result.runs) return null;
+
     result.runs.forEach((run, i) => {
       if (i === 0) time = run;
       if (run < time) time = run;
@@ -38,7 +40,7 @@
   }
 
   function getRunVal(keyIndex, runIndex) {
-    return results[resultKeys[keyIndex]].runs[runIndex];
+    return results[resultKeys[keyIndex]]?.runs[runIndex];
   }
 
   function shouldAddComma(index: number, length: number): boolean {
