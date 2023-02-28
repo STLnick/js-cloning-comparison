@@ -35,8 +35,11 @@
     return time;
   }, 0);
 
-  $: isFastestTime = (run) => {
-    return run === fastestTime;
+  function isFastestTime(values, index) {
+    const runValue = values[index];
+    const testValues = [ 0, 1, 2 ].filter(i => i !== index);
+
+    return testValues.every(i => runValue < values[i]);
   }
 
   function getRunVal(keyIndex, runIndex) {
@@ -76,7 +79,7 @@
         </div>
       {/each}
     </div>
-    <div class="w-[85%]">
+    <div class="w-[85%] min-h-[200px]">
       <div class="flex">
         {#each resultKeys as resultKey}
           <div class="w-[33.3%] p-1">
@@ -85,27 +88,26 @@
         {/each}
       </div>
       {#each flattenedResults as result}
-      <!-- {#each runIndices as index} -->
         <div class="flex">
           <div class="w-[33.3%] p-1">
-              <div class:font-bold={isFastestTime(result[0])}>
+              <div class:font-bold={isFastestTime(result, 0)}>
                 {`${result[0] && formatNumber(result[0].toFixed(2))}ms`}
               </div>
           </div>
           <div class="w-[33.3%] p-1">
-              <div class:font-bold={isFastestTime(result[1])}>
+              <div class:font-bold={isFastestTime(result, 1)}>
                 {`${result[1] && formatNumber(result[1].toFixed(2))}ms`}
               </div>
           </div>
           <div class="w-[33.3%] p-1">
-              <div class:font-bold={isFastestTime(result[2])}>
+              <div class:font-bold={isFastestTime(result, 2)}>
                 {`${result[2] && formatNumber(result[2].toFixed(2))}ms`}
               </div>
           </div>
         </div>
       {:else}
-        <div>
-          <span class="text-center">(No Runs Yet)</span>
+        <div class="h-[150px] flex justify-center">
+          <span class="text-center text-xl my-auto">(No Runs Yet)</span>
         </div>
       {/each}
     </div>
