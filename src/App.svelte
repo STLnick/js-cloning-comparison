@@ -44,7 +44,10 @@
         datasets: [{
           label: 'Average Time Elapsed',
           data: resultKeys.map(key => results[key]?.average),
-          borderWidth: 2
+          backgroundColor: ['rgba(255, 0, 0, 0.1)', 'rgba(255, 62, 0, 0.1)', 'rgba(149, 53, 83, 0.1)'],
+          borderColor: ['rgba(255, 0, 0, 0.2)', 'rgba(255, 62, 0, 0.2)', 'rgba(149, 53, 83, 0.2)'],
+          borderWidth: 2,
+          hoverBackgroundColor: ['rgba(255, 0, 0, 0.2)', 'rgba(255, 62, 0, 0.2)', 'rgba(149, 53, 83, 0.2)'],
         }],
       },
       options: {
