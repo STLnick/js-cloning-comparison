@@ -57,6 +57,10 @@
     loading = false;
   }
 
+  const primary = (dark = '') => `rgba(255, 0, 0, ${dark ? 0.2 : 0.1})`;
+  const secondary = (dark = '') => `rgba(255, 62, 0, ${dark ? 0.2 : 0.1})`;
+  const tertiary = (dark = '') => `rgba(149, 53, 83, ${dark ? 0.2 : 0.1})`;
+
   window.requestAnimationFrame(() => {
     const ctx = document.getElementById('chart-canvas') as HTMLCanvasElement;
   
@@ -67,10 +71,10 @@
         datasets: [{
           label: 'Average Time Elapsed',
           data: resultsLog,
-          backgroundColor: ['rgba(255, 0, 0, 0.1)', 'rgba(255, 62, 0, 0.1)', 'rgba(149, 53, 83, 0.1)'],
-          borderColor: ['rgba(255, 0, 0, 0.2)', 'rgba(255, 62, 0, 0.2)', 'rgba(149, 53, 83, 0.2)'],
+          backgroundColor: [primary(), secondary(), tertiary()],
+          borderColor: [primary('dark'), secondary('dark'), tertiary('dark')],
           borderWidth: 2,
-          hoverBackgroundColor: ['rgba(255, 0, 0, 0.2)', 'rgba(255, 62, 0, 0.2)', 'rgba(149, 53, 83, 0.2)'],
+          hoverBackgroundColor: [primary('dark'), secondary('dark'), tertiary('dark')],
         }],
       },
       options: {
