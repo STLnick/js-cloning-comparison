@@ -17,20 +17,43 @@
   $: tester.setIterations(iterations);
 
   let results = {
-    jsonSAP: null,
-    structuredClone: null,
-    recursivelyCloneObject: null,
+    jsonSAP: [],
+    structuredClone: [],
+    recursivelyCloneObject: [],
   };
   const resultKeys = Object.keys(results);
+  const resultsLog = [
+      {
+        label: resultKeys[0],
+        data: results[resultKeys[0]]
+      },
+      {
+        label: resultKeys[1],
+        data: results[resultKeys[1]]
+      },
+      {
+        label: resultKeys[2],
+        data: results[resultKeys[2]]
+      },
+    ];
+
+  function updateLog(data) {
+    resultKeys.forEach(key => {
+      results[key].push(data[key]);
+    });
+  }
 
   function handleClick() {
     if (loading) return;
     loading = true;
 
     iterationLog = [ ...iterationLog, iterations ];
-    results = tester.run();
-    chart.data.datasets[0].data = resultKeys.map(key => results[key].average);
+    const newResults = tester.run();
+
+    updateLog(newResults);
+    chart.data.datasets[0].data = [ ...resultsLog ];
     chart.update();
+
     loading = false;
   }
 
@@ -43,7 +66,7 @@
         labels: resultKeys,
         datasets: [{
           label: 'Average Time Elapsed',
-          data: resultKeys.map(key => results[key]?.average),
+          data: resultsLog,
           backgroundColor: ['rgba(255, 0, 0, 0.1)', 'rgba(255, 62, 0, 0.1)', 'rgba(149, 53, 83, 0.1)'],
           borderColor: ['rgba(255, 0, 0, 0.2)', 'rgba(255, 62, 0, 0.2)', 'rgba(149, 53, 83, 0.2)'],
           borderWidth: 2,
