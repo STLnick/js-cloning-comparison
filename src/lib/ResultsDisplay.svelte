@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { TestResults } from '$utils/interfaces';
+  import type { LogEntry } from '$utils/interfaces';
 
-  export let results: TestResults;
+  export let results: LogEntry[];
   export let iterations: any;
   
   $: resultKeys = Object.keys(results);
@@ -43,7 +43,8 @@
   }
 
   function getRunVal(keyIndex, runIndex) {
-    return results[resultKeys[keyIndex]]?.runs[runIndex];
+    const logEntry = results.find(r => r.label === resultKeys[keyIndex]);
+    return logEntry?.data[runIndex];
   }
 
   function shouldAddComma(index: number, length: number): boolean {

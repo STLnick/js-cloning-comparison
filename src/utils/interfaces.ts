@@ -8,3 +8,8 @@ export interface TestResults {
   structuredClone: TestResult;
   recursivelyCloneObject: TestResult;
 }
+
+export interface LogEntry {
+  label: string;
+  data: number[];
+}

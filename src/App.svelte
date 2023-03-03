@@ -23,24 +23,22 @@
   };
   const resultKeys = Object.keys(results);
   const resultsLog = [
-      {
-        label: resultKeys[0],
-        data: results[resultKeys[0]]
-      },
-      {
-        label: resultKeys[1],
-        data: results[resultKeys[1]]
-      },
-      {
-        label: resultKeys[2],
-        data: results[resultKeys[2]]
-      },
-    ];
+    {
+      label: resultKeys[0],
+      data: results[resultKeys[0]]
+    },
+    {
+      label: resultKeys[1],
+      data: results[resultKeys[1]]
+    },
+    {
+      label: resultKeys[2],
+      data: results[resultKeys[2]]
+    },
+  ];
 
-  function updateLog(data) {
-    resultKeys.forEach(key => {
-      results[key].push(data[key]);
-    });
+  function updateLog(newData) {
+    resultsLog.forEach(entry => (entry.data = newData[entry.label].runs));
   }
 
   function handleClick() {
@@ -49,6 +47,8 @@
 
     iterationLog = [ ...iterationLog, iterations ];
     const newResults = tester.run();
+
+    console.log({ newResults })
 
     updateLog(newResults);
     chart.data.datasets[0].data = [ ...resultsLog ];
@@ -124,7 +124,7 @@
   <div class="w-[800px] mx-auto mt-12">
     <canvas id="chart-canvas"></canvas>
   </div>
-  <ResultsDisplay results={results} iterations={iterationLog}/>
+  <ResultsDisplay results={resultsLog} iterations={iterationLog}/>
 </main>
 <Footer />
 
