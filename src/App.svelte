@@ -6,11 +6,22 @@
   import ResultsDisplay from './lib/ResultsDisplay.svelte';
   import Chart from 'chart.js/auto';
   import { createTester } from './lib/index';
+  
+  const colorMap = {
+    0: (dark: boolean) => `rgba(255, 0, 0, ${dark ? 0.2 : 0.1})`,
+    1: (dark: boolean) => `rgba(255, 62, 0, ${dark ? 0.2 : 0.1})`,
+    2: (dark: boolean) => `rgba(149, 53, 83, ${dark ? 0.2 : 0.1})`,
+  };
+  const getColor = (i: number, dark = false) => {
+    console.log({ i })
+    return colorMap[i](dark);
+  }
 
   let chart;
   let loading = true;
   let iterations = 10000;
   let iterationLog = [];
+  $: numberOfRuns = iterationLog.length;
 
   const tester = createTester();
   tester.setIterations(iterations);
@@ -22,44 +33,41 @@
     recursivelyCloneObject: [],
   };
   const resultKeys = Object.keys(results);
-  const resultsLog = [
-    {
-      label: resultKeys[0],
-      data: results[resultKeys[0]]
-    },
-    {
-      label: resultKeys[1],
-      data: results[resultKeys[1]]
-    },
-    {
-      label: resultKeys[2],
-      data: results[resultKeys[2]]
-    },
-  ];
+  let resultsLog = [];
 
   function updateLog(newData) {
-    resultsLog.forEach(entry => (entry.data = newData[entry.label].runs));
+    const chartData = [];
+    const lastIndex = numberOfRuns;
+
+    resultKeys.forEach(key => {
+      chartData.push(newData[key].runs[lastIndex]);
+    });
+
+    chart.data.datasets.push({
+      label: `Run #${lastIndex + 1}`,
+      data: chartData,
+      backgroundColor: getColor(lastIndex % 3),
+      borderColor: getColor(lastIndex % 3, true),
+      borderWidth: 2,
+      hoverBackgroundColor: getColor(lastIndex % 3, true),
+    });
+  }
+
+  function updateDisplay(newResults) {
+    iterationLog = [ ...iterationLog, iterations ];
+    updateLog(newResults);
+
+    chart.update();
   }
 
   function handleClick() {
     if (loading) return;
+
     loading = true;
-
-    iterationLog = [ ...iterationLog, iterations ];
     const newResults = tester.run();
-
-    console.log({ newResults })
-
-    updateLog(newResults);
-    chart.data.datasets[0].data = [ ...resultsLog ];
-    chart.update();
-
+    updateDisplay(newResults);
     loading = false;
   }
-
-  const primary = (dark = '') => `rgba(255, 0, 0, ${dark ? 0.2 : 0.1})`;
-  const secondary = (dark = '') => `rgba(255, 62, 0, ${dark ? 0.2 : 0.1})`;
-  const tertiary = (dark = '') => `rgba(149, 53, 83, ${dark ? 0.2 : 0.1})`;
 
   window.requestAnimationFrame(() => {
     const ctx = document.getElementById('chart-canvas') as HTMLCanvasElement;
@@ -68,14 +76,7 @@
       type: 'bar',
       data: {
         labels: resultKeys,
-        datasets: [{
-          label: 'Average Time Elapsed',
-          data: resultsLog,
-          backgroundColor: [primary(), secondary(), tertiary()],
-          borderColor: [primary('dark'), secondary('dark'), tertiary('dark')],
-          borderWidth: 2,
-          hoverBackgroundColor: [primary('dark'), secondary('dark'), tertiary('dark')],
-        }],
+        datasets: [],
       },
       options: {
         scales: {

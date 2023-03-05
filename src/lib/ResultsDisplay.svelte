@@ -4,8 +4,7 @@
   export let results: LogEntry[];
   export let iterations: any;
   
-  $: resultKeys = Object.keys(results);
-  $: arrayResults = Object.keys(results).map(key => ({ ...results[key], key}));
+  $: resultKeys = results.map(r => r.label);
   $: flattenedResults = (() => {
     let flatRuns = [];
     const runCount = iterations.length;
@@ -20,20 +19,6 @@
 
     return flatRuns;
   })();
-  $: runIndices = iterations.reduce((indices: number[], _, i: number) => {
-    indices.push(i);
-    return indices;
-  }, []);
-  $: fastestTime = arrayResults.reduce((time, result) => {
-    if (!result.runs) return null;
-
-    result.runs.forEach((run, i) => {
-      if (i === 0) time = run;
-      if (run < time) time = run;
-    });
-
-    return time;
-  }, 0);
 
   function isFastestTime(values, index) {
     const runValue = values[index];
