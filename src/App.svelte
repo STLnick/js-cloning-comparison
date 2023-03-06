@@ -12,10 +12,7 @@
     1: (dark: boolean) => `rgba(255, 62, 0, ${dark ? 0.2 : 0.1})`,
     2: (dark: boolean) => `rgba(149, 53, 83, ${dark ? 0.2 : 0.1})`,
   };
-  const getColor = (i: number, dark = false) => {
-    console.log({ i })
-    return colorMap[i](dark);
-  }
+  const getColor = (i: number, dark = false) => colorMap[i](dark);
 
   let chart;
   let loading = true;
