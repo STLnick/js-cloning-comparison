@@ -32,13 +32,9 @@
   const resultKeys = Object.keys(results);
   let resultsLog = [];
 
-  function updateLog(newData) {
-    const chartData = [];
+  function updateData(newData) {
     const lastIndex = numberOfRuns;
-
-    resultKeys.forEach(key => {
-      chartData.push(newData[key].runs[lastIndex]);
-    });
+    const chartData = resultKeys.map(k => newData[k].runs[lastIndex]);
 
     chart.data.datasets.push({
       label: `Run #${lastIndex + 1}`,
@@ -48,11 +44,12 @@
       borderWidth: 2,
       hoverBackgroundColor: getColor(lastIndex % 3, true),
     });
+    resultsLog = [ ...resultsLog, chartData ];
   }
 
   function updateDisplay(newResults) {
     iterationLog = [ ...iterationLog, iterations ];
-    updateLog(newResults);
+    updateData(newResults);
 
     chart.update();
   }
@@ -122,7 +119,7 @@
   <div class="w-[800px] mx-auto mt-12">
     <canvas id="chart-canvas"></canvas>
   </div>
-  <ResultsDisplay results={resultsLog} iterations={iterationLog}/>
+  <ResultsDisplay headers={resultKeys} results={resultsLog} iterations={iterationLog}/>
 </main>
 <Footer />
 

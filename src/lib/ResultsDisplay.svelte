@@ -1,35 +1,17 @@
 <script lang="ts">
   import type { LogEntry } from '$utils/interfaces';
 
+  export let headers: string[];
   export let results: LogEntry[];
   export let iterations: any;
   
   $: resultKeys = results.map(r => r.label);
-  $: flattenedResults = (() => {
-    let flatRuns = [];
-    const runCount = iterations.length;
-
-    for (let i = 0; i < runCount; i++) {
-      flatRuns.push([
-        getRunVal(0, i),
-        getRunVal(1, i),
-        getRunVal(2, i),
-      ]);
-    }
-
-    return flatRuns;
-  })();
 
   function isFastestTime(values, index) {
     const runValue = values[index];
     const testValues = [ 0, 1, 2 ].filter(i => i !== index);
 
     return testValues.every(i => runValue < values[i]);
-  }
-
-  function getRunVal(keyIndex, runIndex) {
-    const logEntry = results.find(r => r.label === resultKeys[keyIndex]);
-    return logEntry?.data[runIndex];
   }
 
   function shouldAddComma(index: number, length: number): boolean {
@@ -67,13 +49,13 @@
     </div>
     <div class="w-[85%] min-h-[200px]">
       <div class="flex">
-        {#each resultKeys as resultKey}
+        {#each headers as header}
           <div class="w-[33.3%] p-1">
-            <h3 class="text-lg font-bold">{resultKey}</h3>
+            <h3 class="text-lg font-bold">{header}</h3>
           </div>
         {/each}
       </div>
-      {#each flattenedResults as result}
+      {#each results as result}
         <div class="flex">
           <div class="w-[33.3%] p-1">
               <div class:font-bold={isFastestTime(result, 0)}>
