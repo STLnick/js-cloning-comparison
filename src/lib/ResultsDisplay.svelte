@@ -42,7 +42,7 @@
         <h3 class="text-lg">Iterations</h3>
       </div>
       {#each iterations as iterationCount}
-        <div class="p-1">
+        <div class="p-1 odd:bg-gray-300">
             {formatNumber(iterationCount)}
         </div>
       {/each}
@@ -56,7 +56,7 @@
         {/each}
       </div>
       {#each results as result}
-        <div class="flex">
+        <div class="flex odd:bg-gray-300">
           <div class="w-[33.3%] p-1">
               <div class:font-bold={isFastestTime(result, 0)}>
                 {`${result[0] && formatNumber(result[0].toFixed(2))}ms`}
