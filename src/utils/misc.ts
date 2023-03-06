@@ -31,3 +31,11 @@ export const formatNumber = (num: number): string => {
 
   return `${formatted.reverse().join("")}${decimal}`;
 };
+
+const colorMap = {
+  0: (dark: boolean) => `rgba(255, 0, 0, ${dark ? 0.2 : 0.1})`,
+  1: (dark: boolean) => `rgba(255, 62, 0, ${dark ? 0.2 : 0.1})`,
+  2: (dark: boolean) => `rgba(149, 53, 83, ${dark ? 0.2 : 0.1})`,
+};
+
+export const getColor = (i: number, dark = false) => colorMap[i](dark);

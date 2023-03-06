@@ -6,13 +6,7 @@
   import ResultsDisplay from './lib/ResultsDisplay.svelte';
   import Chart from 'chart.js/auto';
   import { createTester } from './lib/index';
-  
-  const colorMap = {
-    0: (dark: boolean) => `rgba(255, 0, 0, ${dark ? 0.2 : 0.1})`,
-    1: (dark: boolean) => `rgba(255, 62, 0, ${dark ? 0.2 : 0.1})`,
-    2: (dark: boolean) => `rgba(149, 53, 83, ${dark ? 0.2 : 0.1})`,
-  };
-  const getColor = (i: number, dark = false) => colorMap[i](dark);
+  import { getColor } from '$utils/misc';
 
   let chart;
   let loading = true;
@@ -24,33 +18,33 @@
   tester.setIterations(iterations);
   $: tester.setIterations(iterations);
 
-  let results = {
-    jsonSAP: [],
-    structuredClone: [],
-    recursivelyCloneObject: [],
-  };
-  const resultKeys = Object.keys(results);
+  const resultKeys = [
+    'jsonSAP',
+    'structuredClone',
+    'recursivelyCloneObject',
+  ];
   let resultsLog = [];
 
-  function updateData(newData) {
-    const lastIndex = numberOfRuns;
-    const chartData = resultKeys.map(k => newData[k].runs[lastIndex]);
+  const createDataset = (data) => ({
+    label: `Run #${numberOfRuns + 1}`,
+    data,
+    backgroundColor: getColor(numberOfRuns % 3),
+    borderColor: getColor(numberOfRuns % 3, true),
+    borderWidth: 2,
+    hoverBackgroundColor: getColor(numberOfRuns % 3, true),
+  });
 
-    chart.data.datasets.push({
-      label: `Run #${lastIndex + 1}`,
-      data: chartData,
-      backgroundColor: getColor(lastIndex % 3),
-      borderColor: getColor(lastIndex % 3, true),
-      borderWidth: 2,
-      hoverBackgroundColor: getColor(lastIndex % 3, true),
-    });
+  function updateData(newData) {
+    const chartData = resultKeys.map(k => newData[k].runs[numberOfRuns]);
+    const newDataset = createDataset(chartData);
+
+    chart.data.datasets.push(newDataset);
     resultsLog = [ ...resultsLog, chartData ];
   }
 
   function updateDisplay(newResults) {
     iterationLog = [ ...iterationLog, iterations ];
     updateData(newResults);
-
     chart.update();
   }
 

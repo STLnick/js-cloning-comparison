@@ -12,8 +12,6 @@
 
     return testValues.every(i => runValue < values[i]);
   }
-
-
 </script>
 
 <div class="w-[800px] flex mx-auto mt-10 p-4 bg-gray-200">
