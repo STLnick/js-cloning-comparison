@@ -54,7 +54,7 @@
     chart.update();
   }
 
-  function handleClick() {
+  function runTest() {
     if (loading) return;
 
     loading = true;
@@ -105,9 +105,20 @@
         bind:value={iterations}
       />
     </label>
+    <div>
+      <button>
+        
+      </button>
+      <button>
+
+      </button>
+      <button>
+
+      </button>
+    </div>
     <button
       class="w-48 bg-svelte-500 hover:bg-svelte-400 text-white font-bold py-2 px-4 border-b-4 border-svelte-700 hover:border-svelte-500 rounded"
-      on:click={handleClick}
+      on:click={runTest}
     >
       {#if loading}
       <LoadingSpinner />

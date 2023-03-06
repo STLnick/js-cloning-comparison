@@ -1,11 +1,10 @@
 <script lang="ts">
   import type { LogEntry } from '$utils/interfaces';
+  import { formatNumber } from '$utils/misc';
 
   export let headers: string[];
   export let results: LogEntry[];
-  export let iterations: any;
-  
-  $: resultKeys = results.map(r => r.label);
+  export let iterations: number[];
 
   function isFastestTime(values, index) {
     const runValue = values[index];
@@ -14,26 +13,7 @@
     return testValues.every(i => runValue < values[i]);
   }
 
-  function shouldAddComma(index: number, length: number): boolean {
-    return index + 1 !== length && (index + 1) % 3 === 0;
-  }
 
-  function formatNumber(num: number): string {
-    const numStringArr = String(num).split('').reverse();
-    const dotIndex = numStringArr.findIndex(c => c === '.');
-    const decimal = dotIndex !== -1 ? `.${numStringArr.slice(0, dotIndex).reverse().join('')}` : '';
-    const valueToFormat = dotIndex !== -1 ? numStringArr.slice(dotIndex + 1) : [ ...numStringArr ];
-    const formatted = [];
-
-    valueToFormat.forEach((num, i) => {
-      formatted.push(num);
-      if (shouldAddComma(i, valueToFormat.length)) {
-        formatted.push(',');
-      }
-    });
-
-    return `${formatted.reverse().join('')}${decimal}`;
-  }
 </script>
 
 <div class="w-[800px] flex mx-auto mt-10 p-4 bg-gray-200">
